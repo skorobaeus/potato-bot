@@ -1,6 +1,5 @@
 // Import the discord.js module
 const Discord = require('discord.js');
-const auth = require('./auth.json');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
