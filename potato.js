@@ -176,4 +176,4 @@ client.on('message', async message => {
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
-client.login(auth.token);
+client.login(process.env.BOT_TOKEN);
