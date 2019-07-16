@@ -114,34 +114,7 @@
       },
       "version": "https://github.com/woor/discord.io/tarball/gateway_v6"
     },
-    "discord.js": {
-      "dependencies": {
-        "tweetnacl": {
-          "integrity": "sha512-kcoMoKTPYnoeS50tzoqjPY3Uv9axeuuFAZY9M/9zFnhoVvRfxz9K29IMPD7jGmt2c8SW7i3gT9WqDl2+nV7p4A==",
-          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.1.tgz",
-          "version": "1.0.1"
-        },
-        "ws": {
-          "integrity": "sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==",
-          "requires": {
-            "async-limiter": "~1.0.0"
-          },
-          "resolved": "https://registry.npmjs.org/ws/-/ws-6.2.1.tgz",
-          "version": "6.2.1"
-        }
-      },
-      "from": "github:discordjs/discord.js",
-      "requires": {
-        "form-data": "^2.3.3",
-        "node-fetch": "^2.3.0",
-        "pako": "^1.0.8",
-        "prism-media": "^1.0.0",
-        "setimmediate": "^1.0.5",
-        "tweetnacl": "^1.0.1",
-        "ws": "^6.1.3"
-      },
-      "version": "github:discordjs/discord.js#adb082305d41194f0392353f1da29d43f2bc5617"
-    },
+    "discord.js": "^11.5.1",
     "enabled": {
       "integrity": "sha1-ll9lE9LC0cX0ZStkouM5ZGf8L5M=",
       "requires": {
