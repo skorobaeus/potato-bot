@@ -165,7 +165,7 @@ client.on('message', async message => {
       url: 'api.giphy.com/v1/gifs/search',
       apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
       requested: message.content.substring(message.content.indexOf('!gif') + 4).trim().toLowerCase(),
-      limit: 1,
+      limit: 5,
       rating: 'G'
     }
     
@@ -173,14 +173,23 @@ client.on('message', async message => {
     rp(`https://${param.url}?api_key=${param.apiKey}&q=${param.requested}&limit=${param.limit}&offset=0&rating=${param.rating}&lang=en`)
     .then(data => {
         try {
-          let imag = JSON.parse(data);    
-          console.log(imag.data[0].images.original.url);
-          console.log(imag.data[0].images.original.width);
-          message.channel.send({
-            files: [`${imag.data[0].images.original.url}?size=${imag.data[0].images.original.width}`]
-          })
-            .then(console.log(`Posted a gif for "${param.requested}" request`))
-            .catch(console.error);        
+          let parsedData = JSON.parse(data);
+          let random = Math.floor(Math.random() * parsedData.data.length);;
+          console.log(random);
+          
+          if (parsedData.data[random].images.original.size < 8388000) {
+            message.channel.send({
+              files: [`${parsedData.data[random].images.original.url}?size=${parsedData.data[random].images.original.width}`]
+            })
+              .then(console.log(`Posted a gif for "${param.requested}" request`))
+              .catch(console.error);          
+          } else {
+            message.channel.send({
+              files: [`${parsedData.data[random].images.downsized.url}?size=${parsedData.data[random].images.downsized.width}`]
+            })
+              .then(console.log(`Posted a gif for "${param.requested}" request`))
+              .catch(console.error);          
+            }
         }
         catch(err) {
           console.log(err);
