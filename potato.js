@@ -35,7 +35,6 @@ function checkCheers() {
       bDayData.cheered = 1;
     }
   });
-  console.log(bDaysData);
 }
 
 /**
@@ -53,20 +52,20 @@ client.on('ready', () => {
 client.on('message', async message => {
   
   let today = new Date(message.createdTimestamp);
-  if (!bDaysData.some(bDayData => new Date(bDayData.day).getMonth() === today.getMonth())) {
-      return;
-  } else {
-    bDaysData.forEach(bDayData => {
-      if (bDayData.day.getMonth() === today.getMonth() && bDayData.day.getDate() === today.getDate() && !bDayData.cheered) {
-        if (bDayData.name !== 'Potato-bot') {
-          message.channel.send(`Сегодня (по моим необъяснимым часам) день рождения ${bDayData.name}! Поздравляю от лица всех роботов и картофелин, и желаю, чтобы твой органический процессор никогда не перегревался, а блюда из картошьки всегда были вкусненькими :3`);            
-        } else {
-          message.channel.send(`А у меня сегодня день рождения :3`);
-        }
-        bDayData.cheered = 1;
+  bDaysData.forEach(bDayData => {
+    if (bDayData.day.getMonth() === today.getMonth() && bDayData.day.getDate() === today.getDate() && !bDayData.cheered) {
+
+      // checking if bot restarted in the last 2 hours to prevent spam
+      if (client.uptime < 2 * 60 * 60 * 1000 ) return;
+
+      if (bDayData.name !== 'Potato-bot') {
+        message.channel.send(`Сегодня (по моим необъяснимым часам) день рождения ${bDayData.name}! Поздравляю от лица всех роботов и картофелин, и желаю, чтобы твой органический процессор никогда не перегревался, а блюда из картошьки всегда были вкусненькими :3 (извините, я могу поздравить несколько раз, я пока не очень умненький)`);            
+      } else {
+        message.channel.send(`А у меня сегодня день рождения :3`);
       }
-    });
-  }
+      bDayData.cheered = 1;
+    }
+  });
   
   //COMMANDS
   if (message.content.toLowerCase() === '!help') {
@@ -78,14 +77,13 @@ client.on('message', async message => {
 !lol — -//- с бугагашками
 !ping — посчитает пинг. Не знаю зачем, прост
 !count слово — посчитает использование слова на всех каналах (ееее)
+!gif [запрос] - постит гифку по запросу (медленно)
 кто молодец? — скажет, что спросивший молодец
 кто хороший мальчик? — скажет, что он`);
   }   
   
   if (message.content.toLowerCase() === '!bot' && !message.author.bot) {
     message.channel.send('Ich bin Kartoffel');
-    console.log(message.author);
-    console.log(message.content.length);
   }
   
   if (message.content.length >= 150 && Math.round(Math.random()) == 1) {
@@ -161,6 +159,41 @@ client.on('message', async message => {
     });    
   }
   
+  if (message.content.toLowerCase().includes('!gif') && !message.author.bot) {
+    
+    const param = {
+      url: 'api.giphy.com/v1/gifs/random',
+      apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
+      requested: message.content.substring(message.content.indexOf('!gif') + 4).trim().toLowerCase(),
+      limit: 1,
+      rating: 'R'
+    }
+    
+    const rp = require('request-promise');
+    rp(`https://${param.url}?api_key=${param.apiKey}&tag=${param.requested}&rating=${param.rating}`)
+    .then(data => {
+        try {
+          let imag = JSON.parse(data);    
+          console.log(imag.data.image_url);
+          console.log(imag.data.image_width);
+          message.channel.send({
+            files: [`${imag.data.image_url}?size=${imag.data.image_width}`]
+          })
+            .then(console.log(`Posted a gif for "${param.requested}" request`))
+            .catch(console.error);          
+        }
+        catch(err) {
+          console.log('parsing error');
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        message.channel.send('Не могу, что-то пошло не так :(');
+    });
+
+    
+  }
+  
   //CHATTING & REACTING  
   if (message.content.toLowerCase().includes('кто молодец?') && !message.author.bot) {
     message.channel.send(`Ты молодец, <@${message.author.id}>!`);
@@ -195,7 +228,7 @@ client.on('message', async message => {
       .catch(console.error);
   }
   
-  if (message.content.toLowerCase().includes('картофел') || message.content.toLowerCase().includes('картошк') || message.content.toLowerCase().includes('картопл') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('potato')) {
+  if (message.content.toLowerCase().includes('картофел') || message.content.toLowerCase().includes('картошк') || message.content.toLowerCase().includes('картопл') || message.content.toLowerCase().includes('картофан') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('potato')) {
     message.react('🥔')
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
@@ -212,6 +245,6 @@ client.on('message', async message => {
   }
 });
 
-// Log our bot in using the token from https://discordapp.com/developers/applications/me
+// Log our bot in 
 client.login(process.env.BOT_TOKEN);
 //client.login(config.token);
