@@ -77,7 +77,7 @@ client.on('message', async message => {
 !lol — -//- с бугагашками
 !ping — посчитает пинг. Не знаю зачем, прост
 !count слово — посчитает использование слова на всех каналах (ееее)
-!gif [запрос] - постит гифку по запросу (медленно)
+!gif [запрос] — постит гифку по запросу (иногда медленно)
 кто молодец? — скажет, что спросивший молодец
 кто хороший мальчик? — скажет, что он`);
   }   
@@ -162,28 +162,29 @@ client.on('message', async message => {
   if (message.content.toLowerCase().includes('!gif') && !message.author.bot) {
     
     const param = {
-      url: 'api.giphy.com/v1/gifs/random',
+      url: 'api.giphy.com/v1/gifs/search',
       apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
       requested: message.content.substring(message.content.indexOf('!gif') + 4).trim().toLowerCase(),
       limit: 1,
-      rating: 'R'
+      rating: 'G'
     }
     
     const rp = require('request-promise');
-    rp(`https://${param.url}?api_key=${param.apiKey}&tag=${param.requested}&rating=${param.rating}`)
+    rp(`https://${param.url}?api_key=${param.apiKey}&q=${param.requested}&limit=${param.limit}&offset=0&rating=${param.rating}&lang=en`)
     .then(data => {
         try {
           let imag = JSON.parse(data);    
-          console.log(imag.data.image_url);
-          console.log(imag.data.image_width);
+          console.log(imag.data[0].images.original.url);
+          console.log(imag.data[0].images.original.width);
           message.channel.send({
-            files: [`${imag.data.image_url}?size=${imag.data.image_width}`]
+            files: [`${imag.data[0].images.original.url}?size=${imag.data[0].images.original.width}`]
           })
             .then(console.log(`Posted a gif for "${param.requested}" request`))
-            .catch(console.error);          
+            .catch(console.error);        
         }
         catch(err) {
-          console.log('parsing error');
+          console.log(err);
+          message.channel.send('Не могу, что-то пошло не так :(');
         }
     })
     .catch(err => {
