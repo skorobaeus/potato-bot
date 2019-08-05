@@ -1,6 +1,6 @@
 // Import the discord.js module
 const Discord = require('discord.js');
-const config = require('./auth.json');
+//const config = require('./auth.json');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
@@ -282,5 +282,5 @@ client.on('message', async message => {
 });
 
 // Log our bot in 
-//client.login(process.env.BOT_TOKEN);
-client.login(config.token);
+client.login(process.env.BOT_TOKEN);
+//client.login(config.token);
