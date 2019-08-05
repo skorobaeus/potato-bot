@@ -1,6 +1,6 @@
 // Import the discord.js module
 const Discord = require('discord.js');
-//const config = require('./auth.json');
+const config = require('./auth.json');
 
 // Create an instance of a Discord client
 const client = new Discord.Client();
@@ -37,6 +37,19 @@ function checkCheers() {
   });
 }
 
+function setActivity() {  
+  const activitiesArray = [
+    {type: 'WATCHING', movies: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино']},
+    {type: 'PLAYING', movies: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK']},
+    {type: 'LISTENING', movies: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты']}
+  ]
+  const randomActivity = Math.floor(Math.random() * activitiesArray.length);
+  
+  client.user.setActivity(activitiesArray[randomActivity].movies[Math.floor(Math.random() * activitiesArray[randomActivity].movies.length)], { type: activitiesArray[randomActivity].type })
+    .then(presence => console.log(`Activity set to ${presence.activity.name}`))
+    .catch(console.error);  
+}
+
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
  * received from Discord
@@ -44,6 +57,7 @@ function checkCheers() {
 client.on('ready', () => {
   console.log('I am ready!');
   checkCheers();
+  setActivity();  
   //console.log(client);
 });
 
@@ -268,5 +282,5 @@ client.on('message', async message => {
 });
 
 // Log our bot in 
-client.login(process.env.BOT_TOKEN);
-//client.login(config.token);
+//client.login(process.env.BOT_TOKEN);
+client.login(config.token);
