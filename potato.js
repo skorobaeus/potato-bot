@@ -76,7 +76,7 @@ client.on('message', async message => {
 !omg — -//- с удивленными лицами
 !lol — -//- с бугагашками
 !ping — посчитает пинг. Не знаю зачем, прост
-!count слово — посчитает использование слова на всех каналах (ееее)
+!count [слово] — посчитает использование слова на всех каналах (ееее)
 !gif [запрос] — постит гифку по запросу (иногда медленно)
 кто молодец? — скажет, что спросивший молодец
 кто хороший мальчик? — скажет, что он`);
@@ -84,10 +84,6 @@ client.on('message', async message => {
   
   if (message.content.toLowerCase() === '!bot' && !message.author.bot) {
     message.channel.send('Ich bin Kartoffel');
-  }
-  
-  if (message.content.length >= 150 && Math.round(Math.random()) == 1) {
-    message.channel.send(`Хорошо сказано, ${message.author.username}!`);
   }
   
   if (message.content.toLowerCase() === '!love' && !message.author.bot) {
@@ -160,7 +156,6 @@ client.on('message', async message => {
   }
   
   if (message.content.toLowerCase().includes('!gif') && !message.author.bot) {
-    
     const param = {
       url: 'api.giphy.com/v1/gifs/search',
       apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
@@ -174,7 +169,7 @@ client.on('message', async message => {
     .then(data => {
         try {
           let parsedData = JSON.parse(data);
-          let random = Math.floor(Math.random() * parsedData.data.length);;
+          let random = Math.floor(Math.random() * parsedData.data.length);
           console.log(random);
           
           if (parsedData.data[random].images.original.size < 8388000) {
@@ -204,7 +199,24 @@ client.on('message', async message => {
     
   }
   
-  //CHATTING & REACTING  
+  //CHATTING & REACTING
+  if (message.content.length >= 150 && Math.floor(Math.random() * 3) == 1 && !message.author.bot) {    
+    let answersArray = ['Хорошо сказано', 'Дело говоришь', 'Вот да', 'Поддерживаю', 'Точно-точно'];
+    let answersRandom = Math.floor(Math.random() * answersArray.length);    
+    message.channel.send(`${answersArray[answersRandom]}, ${message.author.username}!`);
+  }
+  
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф') || message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картопл'))
+      &&
+      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('ты ж моя'))
+     ) {
+    let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻'];
+    let answersRandom = Math.floor(Math.random() * answersArray.length);    
+    message.channel.send(answersArray[answersRandom]);
+  }    
+  
   if (message.content.toLowerCase().includes('кто молодец?') && !message.author.bot) {
     message.channel.send(`Ты молодец, <@${message.author.id}>!`);
     message.react('😍')
