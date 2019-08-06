@@ -39,8 +39,8 @@ function checkCheers() {
 
 function setActivity() {  
   const activitiesArray = [
-    {type: 'WATCHING', movies: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино']},
-    {type: 'PLAYING', movies: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK']},
+    {type: 'WATCHING', movies: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино', 'спойлеры']},
+    {type: 'PLAYING', movies: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK', 'сапёра']},
     {type: 'LISTENING', movies: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты', 'треск горящих жоп']}
   ]
   const randomActivity = Math.floor(Math.random() * activitiesArray.length);
@@ -226,7 +226,7 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('ты ж моя'))
      ) {
-    let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻'];
+    let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻', ':)'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
     message.channel.send(answersArray[answersRandom]);
   }    
@@ -235,10 +235,10 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('хватит') || message.content.toLowerCase().includes('прекращай') || message.content.toLowerCase().includes('перестань')) 
       && 
-      (message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф'))
+      (message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф') || message.content.toLowerCase().includes('картопл'))
      ) {
     setActivity();
-    let answersArray = ['Всё-всё!', 'Ну ещё 5 минуточек(', 'Ладно, прекращаю'];
+    let answersArray = ['Всё-всё!', 'Ну ещё 5 минуточек(', 'Ладно, прекращаю', 'Ничего нельзя(', 'Со мной легко договориться!'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
     message.channel.send(answersArray[answersRandom]);
   }  
@@ -260,12 +260,9 @@ client.on('message', async message => {
   if (message.content.toLowerCase().includes('кофе') || message.content.toLowerCase().includes('спать хо') || message.content.toLowerCase().includes('хочу спать') || message.content.toLowerCase().includes('хочется спат') || message.content.toLowerCase().includes('утро') || message.content.toLowerCase().includes('утра') || message.content.toLowerCase() === 'утр') {
         
     let foodArray = ['🥐', '🧀', '🥞', '🍳', '🍰', '🍩'];
-    let foodRandom = Math.floor(Math.random() * 6);   
-    console.log(foodRandom);
-    
+    let foodRandom = Math.floor(Math.random() * foodArray.length);       
     let coffeeArray = ['☕', '🍵', '🥛'];
-    let coffeeRandom = Math.floor(Math.random() * 3); 
-    console.log(coffeeRandom);
+    let coffeeRandom = Math.floor(Math.random() * coffeeArray.length); 
     
     message.react(foodArray[foodRandom])
       .then(console.log(`Liked that: ${message.content}`))
