@@ -5,7 +5,18 @@ const Discord = require('discord.js');
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
-// Functions
+// Functions & Arrays
+const bDaysData = [
+  {name: 'wizjer', day: new Date('June 30'), cheered: 0},
+  {name: 'sabrus', day: new Date('October 31'), cheered: 0},
+  {name: 'Alex Lather', day: new Date('February 14'), cheered: 0},
+  {name: 'Emberiza', day: new Date('April 28'), cheered: 0},
+  {name: 'Miraks', day: new Date('July 31'), cheered: 0},
+  {name: 'Potato-bot', day: new Date('July 11'), cheered: 0}
+]
+
+const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata', ' бот']
+
 const giveReaction = async (message, amount, reactionsArray) => {
     await message.channel.messages.fetch({ limit: 2 })
           .then(messages => {
@@ -20,15 +31,6 @@ const giveReaction = async (message, amount, reactionsArray) => {
           message.delete();
 }
 
-const bDaysData = [
-  {name: 'wizjer', day: new Date('June 30'), cheered: 0},
-  {name: 'sabrus', day: new Date('October 31'), cheered: 0},
-  {name: 'Alex Lather', day: new Date('February 14'), cheered: 0},
-  {name: 'Emberiza', day: new Date('April 28'), cheered: 0},
-  {name: 'Miraks', day: new Date('July 31'), cheered: 0},
-  {name: 'Potato-bot', day: new Date('July 11'), cheered: 0}
-]
-
 function checkCheers() {
   bDaysData.forEach(bDayData => {
     if ((bDayData.day.getMonth() < new Date().getMonth()) || (bDayData.day.getMonth() == new Date().getMonth() && bDayData.day.getDate() < new Date().getDate())) {
@@ -39,13 +41,13 @@ function checkCheers() {
 
 function setActivity() {  
   const activitiesArray = [
-    {type: 'WATCHING', movies: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино', 'спойлеры']},
-    {type: 'PLAYING', movies: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK', 'сапёра']},
-    {type: 'LISTENING', movies: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты', 'треск горящих жоп']}
+    {type: 'WATCHING', list: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино', 'спойлеры']},
+    {type: 'PLAYING', list: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK', 'сапёра']},
+    {type: 'LISTENING', list: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты', 'треск горящих жоп']}
   ]
   const randomActivity = Math.floor(Math.random() * activitiesArray.length);
   
-  client.user.setActivity(activitiesArray[randomActivity].movies[Math.floor(Math.random() * activitiesArray[randomActivity].movies.length)], { type: activitiesArray[randomActivity].type })
+  client.user.setActivity(activitiesArray[randomActivity].list[Math.floor(Math.random() * activitiesArray[randomActivity].list.length)], { type: activitiesArray[randomActivity].type })
     .then(presence => console.log(`Activity set to ${presence.activity.name}`))
     .catch(console.error);  
 }
@@ -169,7 +171,7 @@ client.on('message', async message => {
     });    
   }
   
-  if (message.content.toLowerCase().includes('!gif') && !message.author.bot) {
+  if (!message.author.bot && message.content.toLowerCase().includes('!gif')) {
     const param = {
       url: 'api.giphy.com/v1/gifs/search',
       apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
@@ -214,7 +216,7 @@ client.on('message', async message => {
   }
   
   //CHATTING & REACTING
-  if (message.content.length >= 150 && Math.floor(Math.random() * 3) == 1 && !message.author.bot) {    
+  if (!message.author.bot && message.content.length >= 150 && Math.floor(Math.random() * 3) == 1) {    
     let answersArray = ['Хорошо сказано', 'Дело говоришь', 'Вот да', 'Поддерживаю', 'Точно-точно'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
     message.channel.send(`${answersArray[answersRandom]}, ${message.author.username}!`);
@@ -222,9 +224,9 @@ client.on('message', async message => {
   
   if (!message.author.bot 
       &&
-      (message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф') || message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картопл'))
+      botNames.some(name => {return message.content.toLowerCase().includes(name)})
       &&
-      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('ты ж моя'))
+      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('молодец') || message.content.toLowerCase().includes('ты ж моя'))
      ) {
     let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻', ':)'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
@@ -233,9 +235,9 @@ client.on('message', async message => {
   
   if (!message.author.bot 
       &&
-      (message.content.toLowerCase().includes('хватит') || message.content.toLowerCase().includes('прекращай') || message.content.toLowerCase().includes('перестань')) 
+      (message.content.toLowerCase().includes('хватит') || message.content.toLowerCase().includes('прекращай') || message.content.toLowerCase().includes('перестань') || message.content.toLowerCase().includes('прекрати')) 
       && 
-      (message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф') || message.content.toLowerCase().includes('картопл'))
+      botNames.some(name => {return message.content.toLowerCase().includes(name)})
      ) {
     setActivity();
     let answersArray = ['Всё-всё!', 'Ну ещё 5 минуточек(', 'Ладно, прекращаю', 'Ничего нельзя(', 'Со мной легко договориться!'];
@@ -243,14 +245,14 @@ client.on('message', async message => {
     message.channel.send(answersArray[answersRandom]);
   }  
   
-  if (message.content.toLowerCase().includes('кто молодец?') && !message.author.bot) {
+  if (!message.author.bot && message.content.toLowerCase().includes('кто молодец?')) {
     message.channel.send(`Ты молодец, <@${message.author.id}>!`);
     message.react('😍')
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
   }
   
-  if (message.content.toLowerCase().includes('кто хороший мальчик') && !message.author.bot) {
+  if (!message.author.bot && message.content.toLowerCase().includes('кто хороший мальчик')) {
     message.channel.send(`Я хороший мальчик! 😊`);
     message.react('😊')
       .then(console.log(`Liked that: ${message.content}`))
@@ -273,7 +275,7 @@ client.on('message', async message => {
       .catch(console.error);
   }
   
-  if (message.content.toLowerCase().includes('картофел') || message.content.toLowerCase().includes('картошк') || message.content.toLowerCase().includes('картопл') || message.content.toLowerCase().includes('картофан') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('potato')) {
+  if (botNames.some(name => {return message.content.toLowerCase().includes(name)})) {
     message.react('🥔')
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
