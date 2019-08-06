@@ -41,7 +41,7 @@ function setActivity() {
   const activitiesArray = [
     {type: 'WATCHING', movies: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино']},
     {type: 'PLAYING', movies: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK']},
-    {type: 'LISTENING', movies: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты']}
+    {type: 'LISTENING', movies: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты', 'треск горящих жоп']}
   ]
   const randomActivity = Math.floor(Math.random() * activitiesArray.length);
   
@@ -224,12 +224,24 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф') || message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картопл'))
       &&
-      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('ты ж моя'))
+      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('ты ж моя'))
      ) {
     let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
     message.channel.send(answersArray[answersRandom]);
   }    
+  
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('хватит') || message.content.toLowerCase().includes('прекращай') || message.content.toLowerCase().includes('перестань')) 
+      && 
+      (message.content.toLowerCase().includes('бот') || message.content.toLowerCase().includes('картох') || message.content.toLowerCase().includes('картоф'))
+     ) {
+    setActivity();
+    let answersArray = ['Всё-всё!', 'Ну ещё 5 минуточек(', 'Ладно, прекращаю'];
+    let answersRandom = Math.floor(Math.random() * answersArray.length);    
+    message.channel.send(answersArray[answersRandom]);
+  }  
   
   if (message.content.toLowerCase().includes('кто молодец?') && !message.author.bot) {
     message.channel.send(`Ты молодец, <@${message.author.id}>!`);
