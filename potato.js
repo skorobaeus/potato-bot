@@ -15,7 +15,20 @@ const bDaysData = [
   {name: 'Potato-bot', day: new Date('July 11'), cheered: 0}
 ]
 
-const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata', ' бот']
+function checkCheers() {
+  bDaysData.forEach(bDayData => {
+    if ((bDayData.day.getMonth() < new Date().getMonth()) || (bDayData.day.getMonth() == new Date().getMonth() && bDayData.day.getDate() < new Date().getDate())) {
+      bDayData.cheered = 1;
+    }
+  });
+}
+
+const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata']
+
+function checkName(str) {
+  let clearedString = str.toLowerCase().trim().replace(/[^a-z0-9а-яё]/g, ' ').replace(/\s+/g,' ').split(' ');
+  return clearedString.some(word => {return word == 'бот'});
+}
 
 const giveReaction = async (message, amount, reactionsArray) => {
     await message.channel.messages.fetch({ limit: 2 })
@@ -31,15 +44,13 @@ const giveReaction = async (message, amount, reactionsArray) => {
           message.delete();
 }
 
-function checkCheers() {
-  bDaysData.forEach(bDayData => {
-    if ((bDayData.day.getMonth() < new Date().getMonth()) || (bDayData.day.getMonth() == new Date().getMonth() && bDayData.day.getDate() < new Date().getDate())) {
-      bDayData.cheered = 1;
-    }
-  });
-}
-
-function setActivity() {  
+function setActivity(type, activity, callback) {
+  
+  if (type && activity) {
+    client.user.setActivity(activity, {type: type})
+      .then(presence => console.log(`Activity set to ${presence.activity.name} by request`))
+      .catch(console.error);
+  } else {
   const activitiesArray = [
     {type: 'WATCHING', list: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино', 'спойлеры']},
     {type: 'PLAYING', list: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK', 'сапёра']},
@@ -49,7 +60,10 @@ function setActivity() {
   
   client.user.setActivity(activitiesArray[randomActivity].list[Math.floor(Math.random() * activitiesArray[randomActivity].list.length)], { type: activitiesArray[randomActivity].type })
     .then(presence => console.log(`Activity set to ${presence.activity.name}`))
-    .catch(console.error);  
+    .catch(console.error);
+  }
+  
+  if (callback) callback(type, activity);
 }
 
 /**
@@ -95,7 +109,9 @@ client.on('message', async message => {
 !count [слово] — посчитает использование слова на всех каналах (ееее)
 !gif [запрос] — постит гифку по запросу (иногда медленно)
 кто молодец? — скажет, что спросивший молодец
-кто хороший мальчик? — скажет, что он`);
+кто хороший мальчик? — скажет, что он
+%bot_name% [прекрати / перестань / прекращай / хватит] — сменит статус
+%bot_name% [поиграй / послушай / посмотри] [запрос] — сменит статус на запрошенный`);
   }   
   
   if (message.content.toLowerCase() === '!bot' && !message.author.bot) {
@@ -224,7 +240,7 @@ client.on('message', async message => {
   
   if (!message.author.bot 
       &&
-      botNames.some(name => {return message.content.toLowerCase().includes(name)})
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
       &&
       (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('молодец') || message.content.toLowerCase().includes('ты ж моя'))
      ) {
@@ -237,13 +253,57 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('хватит') || message.content.toLowerCase().includes('прекращай') || message.content.toLowerCase().includes('перестань') || message.content.toLowerCase().includes('прекрати')) 
       && 
-      botNames.some(name => {return message.content.toLowerCase().includes(name)})
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
      ) {
     setActivity();
     let answersArray = ['Всё-всё!', 'Ну ещё 5 минуточек(', 'Ладно, прекращаю', 'Ничего нельзя(', 'Со мной легко договориться!'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
     message.channel.send(answersArray[answersRandom]);
   }  
+  
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('посмотри') || message.content.toLowerCase().includes('послушай') || message.content.toLowerCase().includes('поиграй')) 
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+     ) {
+    
+    let type;
+    let activity;
+    message.content.split(' ').forEach(elem => {
+      if (elem == 'посмотри' || elem == 'послушай' || elem == 'поиграй') {
+        
+        if (elem == 'посмотри') type = 'WATCHING';
+        if (elem == 'послушай') type = 'LISTENING';
+        if (elem == 'поиграй') type = 'PLAYING';
+        
+        activityArr = message.content.substring(message.content.indexOf(elem) + elem.length).trim().toLowerCase().split(' ');
+        if (activityArr[0] !== 'в') {
+          activity = activityArr.join(' ');
+        } else {
+          activityArr.shift();
+          activity = activityArr.join(' ');
+        }
+      }
+    });
+    
+    if (activity.length > 50) {
+      message.channel.send('длинна, сложна, нипанятна :(');
+      return;
+    } else {
+      setActivity(type, activity, (type, activity) => {
+        if (type, activity) {
+          let answersArray = ['Так точно!', 'Уже :)', '👌', 'Окь'];
+          let answersRandom = Math.floor(Math.random() * answersArray.length);    
+          message.channel.send(answersArray[answersRandom]);
+        } else if (!type) {
+          message.channel.send('Я не знаю, что с этим делать D:');
+        } else if (!activity) {
+          message.channel.send('Я не знаю, что именно надо делать D:');
+        }
+      });
+    }
+  }    
   
   if (!message.author.bot && message.content.toLowerCase().includes('кто молодец?')) {
     message.channel.send(`Ты молодец, <@${message.author.id}>!`);
@@ -275,7 +335,7 @@ client.on('message', async message => {
       .catch(console.error);
   }
   
-  if (botNames.some(name => {return message.content.toLowerCase().includes(name)})) {
+  if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content)) {
     message.react('🥔')
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
