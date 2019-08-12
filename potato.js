@@ -28,11 +28,14 @@ function checkCheers() {
     .then(collection => {
       collection.find().toArray((err, items) => {
         items.forEach(item => {
-          let today = new Date();
-          if ((new Date(item.date).getMonth() < today.getMonth()) || (new Date(item.date).getMonth() == today.getMonth() && new Date(item.date).getDate() < today.getDate())) {
+          if (item.cheered) {
             console.log(`${item.name} поздравлен`);
-          }      
-          if (new Date(item.date).getMonth() === today.getMonth() && new Date(item.date).getDate() === today.getDate() && !item.cheered) {
+          }
+          
+          if ((new Date(item.date).getMonth() === new Date().getMonth()) && (new Date(item.date).getDate() === new Date().getDate()) && !item.cheered) {
+            
+            console.log(new Date());
+            console.log(today, new Date(today));
             
             if (item.name !== 'Potato-bot') {
               client.channels.fetch('382216359465058306')
@@ -43,10 +46,6 @@ function checkCheers() {
                 .then(channel => channel.send(`А у меня сегодня день рождения :3`))
                 .catch(console.error);              
             }            
-            
-            
-            
-
             
             collection.updateOne({name: item.name}, {'$set': {'cheered': true}}, (err, item) => {
               console.log('DB updated', item);
