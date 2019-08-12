@@ -6,21 +6,44 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 // Functions & Arrays
-const bDaysData = [
-  {name: 'wizjer', day: new Date('June 30'), cheered: 0},
-  {name: 'sabrus', day: new Date('October 31'), cheered: 0},
-  {name: 'Alex Lather', day: new Date('February 14'), cheered: 0},
-  {name: 'Emberiza', day: new Date('April 28'), cheered: 0},
-  {name: 'Miraks', day: new Date('July 31'), cheered: 0},
-  {name: 'Potato-bot', day: new Date('July 11'), cheered: 0}
-]
+// Connection to Mongo DB
+const knock_db = new Promise((resolve, reject) => {
+  const MongoClient = require('mongodb').MongoClient;
+  const uri = process.env.MONGO_URI;
+  const mngClient = new MongoClient(uri, { useNewUrlParser: true });
+  mngClient.connect((data, err) => {
+    const pData = mngClient.db('potato_data');
+    pData.collections((err, data) => {
+      data.forEach(collection => console.log(collection.collectionName)); //выводит имена коллекций внутри базы потата-дата
+      if (err) console.log(err);
+    })
+    const bDays = pData.collection('b_days'); //подтягивает коллекцию "b_days" и резолвит промис ею
+    resolve(bDays); 
+    if (err) reject(err);
+  });  
+})
 
 function checkCheers() {
-  bDaysData.forEach(bDayData => {
-    if ((bDayData.day.getMonth() < new Date().getMonth()) || (bDayData.day.getMonth() == new Date().getMonth() && bDayData.day.getDate() < new Date().getDate())) {
-      bDayData.cheered = 1;
-    }
-  });
+  knock_db
+    .then(collection => {
+      collection.find().toArray((err, items) => {
+        items.forEach(item => {
+          let today = new Date();
+          if ((new Date(item.date).getMonth() < today.getMonth()) || (new Date(item.date).getMonth() == today.getMonth() && new Date(item.date).getDate() < today.getDate())) {
+            console.log(`${item.name} поздравлен`);
+          }      
+          if (new Date(item.date).getMonth() === today.getMonth() && new Date(item.date).getDate() === today.getDate() && !item.cheered) {            
+            client.channels.fetch('382216359465058306')
+              .then(channel => channel.send(`cheers ${item.name}`))
+              .catch(console.error);
+            
+            collection.updateOne({name: item.name}, {'$set': {'cheered': true}}, (err, item) => {
+              console.log('DB updated', item);
+            })            
+          }          
+        })
+      })
+    })
 }
 
 const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata']
@@ -44,8 +67,7 @@ const giveReaction = async (message, amount, reactionsArray) => {
           message.delete();
 }
 
-function setActivity(type, activity, callback) {
-  
+function setActivity(type, activity, callback) { 
   if (type && activity) {
     client.user.setActivity(activity, {type: type})
       .then(presence => console.log(`Activity set to ${presence.activity.name} by request`))
@@ -62,7 +84,6 @@ function setActivity(type, activity, callback) {
     .then(presence => console.log(`Activity set to ${presence.activity.name}`))
     .catch(console.error);
   }
-  
   if (callback) callback(type, activity);
 }
 
@@ -72,30 +93,14 @@ function setActivity(type, activity, callback) {
  */
 client.on('ready', () => {
   console.log('I am ready!');
-  checkCheers();
   setActivity();  
+  checkCheers(); 
   //console.log(client);
 });
 
 
 // Create an event listener for messages
 client.on('message', async message => {
-  
-  let today = new Date(message.createdTimestamp);
-  bDaysData.forEach(bDayData => {
-    if (bDayData.day.getMonth() === today.getMonth() && bDayData.day.getDate() === today.getDate() && !bDayData.cheered) {
-
-      // checking if bot restarted in the last 2 hours to prevent spam
-      if (client.uptime < 2 * 60 * 60 * 1000 ) return;
-
-      if (bDayData.name !== 'Potato-bot') {
-        message.channel.send(`Сегодня (по моим необъяснимым часам) день рождения ${bDayData.name}! Поздравляю от лица всех роботов и картофелин, и желаю, чтобы твой органический процессор никогда не перегревался, а блюда из картошьки всегда были вкусненькими :3 (извините, я могу поздравить несколько раз, я пока не очень умненький)`);            
-      } else {
-        message.channel.send(`А у меня сегодня день рождения :3`);
-      }
-      bDayData.cheered = 1;
-    }
-  });
   
   //COMMANDS
   if (message.content.toLowerCase() === '!help') {
@@ -271,17 +276,17 @@ client.on('message', async message => {
     let type;
     let activity;
     message.content.split(' ').forEach(elem => {
-      if (elem == 'посмотри' || elem == 'послушай' || elem == 'поиграй') {
+      if (elem == 'посмотри' || elem == 'послушай' || elem == 'поиграй') {    
         
         if (elem == 'посмотри') type = 'WATCHING';
         if (elem == 'послушай') type = 'LISTENING';
         if (elem == 'поиграй') type = 'PLAYING';
         
         activityArr = message.content.substring(message.content.indexOf(elem) + elem.length).trim().toLowerCase().split(' ');
-        if (activityArr[0] !== 'в') {
+        if (type == 'PLAYING' && activityArr[0] == 'в') {
+          activityArr.shift();
           activity = activityArr.join(' ');
         } else {
-          activityArr.shift();
           activity = activityArr.join(' ');
         }
       }
