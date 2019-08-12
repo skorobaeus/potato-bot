@@ -32,10 +32,21 @@ function checkCheers() {
           if ((new Date(item.date).getMonth() < today.getMonth()) || (new Date(item.date).getMonth() == today.getMonth() && new Date(item.date).getDate() < today.getDate())) {
             console.log(`${item.name} поздравлен`);
           }      
-          if (new Date(item.date).getMonth() === today.getMonth() && new Date(item.date).getDate() === today.getDate() && !item.cheered) {            
-            client.channels.fetch('382216359465058306')
-              .then(channel => channel.send(`cheers ${item.name}`))
-              .catch(console.error);
+          if (new Date(item.date).getMonth() === today.getMonth() && new Date(item.date).getDate() === today.getDate() && !item.cheered) {
+            
+            if (item.name !== 'Potato-bot') {
+              client.channels.fetch('382216359465058306')
+                .then(channel => channel.send(`Сегодня (по моим необъяснимым часам) день рождения ${item.name}! Поздравляю от лица всех роботов и картофелин, и желаю, чтобы твой органический процессор никогда не перегревался, а блюда из картошьки всегда были вкусненькими :3`))
+                .catch(console.error);                      
+            } else {
+              client.channels.fetch('382216359465058306')
+                .then(channel => channel.send(`А у меня сегодня день рождения :3`))
+                .catch(console.error);              
+            }            
+            
+            
+            
+
             
             collection.updateOne({name: item.name}, {'$set': {'cheered': true}}, (err, item) => {
               console.log('DB updated', item);
@@ -232,8 +243,6 @@ client.on('message', async message => {
         console.log(err);
         message.channel.send('Не могу, что-то пошло не так :(');
     });
-
-    
   }
   
   //CHATTING & REACTING
