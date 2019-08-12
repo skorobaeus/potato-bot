@@ -32,11 +32,11 @@ function checkCheers() {
             console.log(`${item.name} поздравлен`);
           }
           
+          console.log(item.name);
+          console.log(new Date(), new Date().getMonth(), new Date().getDate());
+          console.log(new Date(item.date), new Date(item.date).getMonth(), new Date(item.date).getDate());
+          
           if ((new Date(item.date).getMonth() === new Date().getMonth()) && (new Date(item.date).getDate() === new Date().getDate()) && !item.cheered) {
-            
-            console.log(new Date());
-            console.log(today, new Date(today));
-            
             if (item.name !== 'Potato-bot') {
               client.channels.fetch('382216359465058306')
                 .then(channel => channel.send(`Сегодня (по моим необъяснимым часам) день рождения ${item.name}! Поздравляю от лица всех роботов и картофелин, и желаю, чтобы твой органический процессор никогда не перегревался, а блюда из картошьки всегда были вкусненькими :3`))
