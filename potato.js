@@ -27,14 +27,16 @@ function checkCheers() {
   knock_db
     .then(collection => {
       collection.find().toArray((err, items) => {
-        items.forEach(item => {
-          if (item.cheered) {
-            console.log(`${item.name} поздравлен`);
+        items.forEach(item => {   
+          if (new Date().getMonth() === '0' && (new Date().getDate() === '1' || new Date().getDate() === '2')) { //Хероку перезагружается каждые 24-27 часов, одни сутки могут выпасть
+            collection.updateOne({name: item.name}, {'$set': {'cheered': false}}, (err, item) => {
+              console.log('Начало года, информация о поздравлении сброшена', item);
+            })            
           }
           
-          console.log(item.name);
-          console.log(new Date(), new Date().getMonth(), new Date().getDate());
-          console.log(new Date(item.date), new Date(item.date).getMonth(), new Date(item.date).getDate());
+          if (item.cheered) {
+            console.log(`${item.name} поздравлен`);
+          }  
           
           if ((new Date(item.date).getMonth() === new Date().getMonth()) && (new Date(item.date).getDate() === new Date().getDate()) && !item.cheered) {
             if (item.name !== 'Potato-bot') {
@@ -46,10 +48,9 @@ function checkCheers() {
                 .then(channel => channel.send(`А у меня сегодня день рождения :3`))
                 .catch(console.error);              
             }            
-            
             collection.updateOne({name: item.name}, {'$set': {'cheered': true}}, (err, item) => {
               console.log('DB updated', item);
-            })            
+            })
           }          
         })
       })
