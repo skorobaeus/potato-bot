@@ -104,7 +104,7 @@ function setActivity(type, activity, callback) {
  */
 client.on('ready', () => {
   console.log('I am ready!');
-  setActivity();  
+  //setActivity();  
   checkCheers(); 
   //console.log(client);
 });
@@ -368,4 +368,4 @@ client.on('message', async message => {
 
 // Log our bot in 
 client.login(process.env.BOT_TOKEN);
-client.login(config.token);
+//client.login(config.token);
