@@ -368,4 +368,4 @@ client.on('message', async message => {
 
 // Log our bot in 
 client.login(process.env.BOT_TOKEN);
-//client.login(config.token);
+client.login(config.token);
