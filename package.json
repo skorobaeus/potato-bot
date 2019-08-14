@@ -114,7 +114,7 @@
       },
       "version": "https://github.com/woor/discord.io/tarball/gateway_v6"
     },
-    "discord.js": "github:discordjs/discord.js",
+
     "enabled": {
       "integrity": "sha1-ll9lE9LC0cX0ZStkouM5ZGf8L5M=",
       "requires": {
