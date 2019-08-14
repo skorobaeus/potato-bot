@@ -10,6 +10,7 @@ const client = new Discord.Client();
 const knock_db = new Promise((resolve, reject) => {
   const MongoClient = require('mongodb').MongoClient;
   const uri = process.env.MONGO_URI;
+  //const uri = config.mongo;
   const mngClient = new MongoClient(uri, { useNewUrlParser: true });
   mngClient.connect((data, err) => {
     const pData = mngClient.db('potato_data');
