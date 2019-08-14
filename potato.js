@@ -55,6 +55,9 @@ function checkCheers() {
         })
       })
     })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata']
