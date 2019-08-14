@@ -61,6 +61,7 @@ function checkCheers() {
     });
 }
 
+// Имена бота
 const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata']
 
 function checkName(str) {
@@ -68,6 +69,10 @@ function checkName(str) {
   return clearedString.some(word => {return word == 'бот'});
 }
 
+// Массив результатов игры
+const games = []; 
+
+// Выдача реакции из предложенных
 const giveReaction = async (message, amount, reactionsArray) => {
     await message.channel.messages.fetch({ limit: 2 })
           .then(messages => {
@@ -82,6 +87,7 @@ const giveReaction = async (message, amount, reactionsArray) => {
           message.delete();
 }
 
+// Установка статуса
 function setActivity(type, activity, callback) { 
   if (type && activity) {
     client.user.setActivity(activity, {type: type})
@@ -101,6 +107,7 @@ function setActivity(type, activity, callback) {
   }
   if (callback) callback(type, activity);
 }
+
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -323,6 +330,98 @@ client.on('message', async message => {
     }
   }    
   
+  // Камень, ножницы, бумага 
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('давай играть')) 
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+     ) {
+    message.channel.send('Давай! Камень, ножницы, бумага?');
+    games.push({player: message.author.username, finished: false, points: {player: 0, bot: 0}});
+  }  
+  
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase() == 'камень' || message.content == '✊' || message.content.toLowerCase() == 'ножницы' || message.content == '✌' || message.content.toLowerCase() == 'бумага' || message.content == '🤚') 
+     ) {
+    console.log(games);
+    if (games.length !== 0 && games.every(game => {return (game.player == message.author.username && game.finished)})) {
+      message.channel.send(`${message.author.username}, игра уже закончена, чтобы начать новую, скажи "бот, давай играть"`);
+    } else if (!games.some(game => {return (game.player == message.author.username && !game.finished)})) {
+      message.channel.send(`${message.author.username}, чтобы сыграть, скажи "бот, давай играть"`);
+    } else {
+      let botCasted = rollDie(message);
+      games.forEach(game => {
+        if (game.player == message.author.username && !game.finished) {
+          let playerCast = transfrom(message.content);
+          let botCast = transfrom(botCasted);
+          checkPoints(game, playerCast, botCast);
+        }    
+      });
+      checkResult(message.author.username, message);
+    }
+  }
+  
+  function rollDie(message) {
+    let castArray = ['✊', '✌', '🤚'];
+    let castRandom = Math.floor(Math.random() * castArray.length);    
+    let cast = castArray[castRandom];
+    message.channel.send(cast);
+    return cast;
+  }
+  
+  function transfrom(cast) {
+    if (cast == 'камень' || cast == '✊') {
+      return 'камень';
+    }
+    if (cast == 'ножницы' || cast == '✌') {
+      return 'ножницы';
+    }
+    if (cast == 'бумага' || cast == '🤚') {
+      return 'бумага';
+    }    
+  }
+  
+  function checkPoints(game, playerCast, botCast) {
+    if (playerCast == 'бумага' && botCast == 'ножницы') game.points.bot++;
+    if (playerCast == 'ножницы' && botCast == 'бумага') game.points.player++;
+
+    if (playerCast == 'камень' && botCast == 'ножницы') game.points.player++;
+    if (playerCast == 'ножницы' && botCast == 'камень') game.points.bot++;
+
+    if (playerCast == 'бумага' && botCast == 'камень') game.points.player++;
+    if (playerCast == 'камень' && botCast == 'бумага') game.points.bot++;  
+  }
+  
+  function checkResult(player, message) {
+    console.log(games);
+    games.forEach(game => {
+      if (game.player == player && !game.finished) {
+        if (game.points.player == game.points.bot) {
+          if (game.points.player == 0) {
+            message.channel.send(`0:0, ничья, давай ещё!`);    
+          } else if (game.points.player == 1) {
+            message.channel.send(`1:1, ничья, давай ещё!`);
+          }
+        }
+        if ((game.points.player == 1 && game.points.bot == 0) || (game.points.player == 0 && game.points.bot == 1)) {
+          message.channel.send(`1:0, давай ещё!`);
+        }
+        if (game.points.player == 2) {
+          message.channel.send(`Победа твоя, ${message.author.username}!`);
+          game.finished = true;
+        }
+        if (game.points.bot == 2) {
+          message.channel.send(`Я выиграл :3`);
+          game.finished = true;
+        }       
+      }
+    });   
+  }
+  
+  /////////////////
+  
   if (!message.author.bot && message.content.toLowerCase().includes('кто молодец?')) {
     message.channel.send(`Ты молодец, <@${message.author.id}>!`);
     message.react('😍')
@@ -360,7 +459,16 @@ client.on('message', async message => {
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
      ) {
     message.channel.send('☕');
-  }  
+  } 
+    
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('вино') || message.content.toLowerCase().includes('винишк'))
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+     ) {
+    message.channel.send('🍷');
+  }    
   
   if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content)) {
     message.react('🥔')
