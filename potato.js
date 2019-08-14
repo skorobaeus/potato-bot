@@ -107,7 +107,7 @@ function setActivity(type, activity, callback) {
  */
 client.on('ready', () => {
   console.log('I am ready!');
-  setActivity();  
+  //setActivity();  
   checkCheers(); 
   //console.log(client);
 });
