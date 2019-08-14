@@ -107,7 +107,7 @@ function setActivity(type, activity, callback) {
  */
 client.on('ready', () => {
   console.log('I am ready!');
-  //setActivity();  
+  setActivity();  
   checkCheers(); 
   //console.log(client);
 });
@@ -351,6 +351,15 @@ client.on('message', async message => {
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
   }
+  
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('кофе')) 
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+     ) {
+    message.channel.send('☕');
+  }  
   
   if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content)) {
     message.react('🥔')
