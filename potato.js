@@ -335,9 +335,14 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('давай играть') || message.content.toLowerCase().includes('давай поиграем')) 
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot'))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     message.channel.send('Давай! Камень, ножницы, бумага?');
+    games.forEach(game => {
+      if (game.player == message.author.username && !game.finished) {
+        game.finished = true;
+      }
+    });
     games.push({player: message.author.username, finished: false, points: {player: 0, bot: 0}});
   }  
   
