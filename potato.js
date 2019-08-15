@@ -296,10 +296,10 @@ client.on('message', async message => {
     let type;
     let activity;
     message.content.split(' ').forEach(elem => {
-      if (elem == 'посмотри' || elem == 'послушай' || elem == 'поиграй') {    
+      if (elem == 'посмотри' || elem == 'посмотри,' || elem == 'послушай' || elem == 'послушай,' || elem == 'поиграй') {    
         
-        if (elem == 'посмотри') type = 'WATCHING';
-        if (elem == 'послушай') type = 'LISTENING';
+        if (elem == 'посмотри' || elem == 'посмотри,') type = 'WATCHING';
+        if (elem == 'послушай' || elem == 'послушай,') type = 'LISTENING';
         if (elem == 'поиграй') type = 'PLAYING';
         
         activityArr = message.content.substring(message.content.indexOf(elem) + elem.length).trim().toLowerCase().split(' ');
