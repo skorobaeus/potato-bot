@@ -466,7 +466,7 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('кофе')) 
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot'))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     message.channel.send('☕');
   } 
@@ -475,12 +475,12 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('вино') || message.content.toLowerCase().includes('винишк'))
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot'))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     message.channel.send('🍷');
   }    
   
-  if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot')) {
+  if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот')) {
     message.react('🥔')
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
