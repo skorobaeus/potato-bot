@@ -64,9 +64,9 @@ function checkCheers() {
 // Имена бота
 const botNames = ['картох', 'картоф', 'картопл', 'картошк', 'потат', 'potato', 'potata']
 
-function checkName(str) {
+function checkWord(str, word) {
   let clearedString = str.toLowerCase().trim().replace(/[^a-z0-9а-яё]/g, ' ').replace(/\s+/g,' ').split(' ');
-  return clearedString.some(word => {return word == 'бот'});
+  return clearedString.some(splitedWord => {return splitedWord == word});
 }
 
 // Массив результатов игры
@@ -265,7 +265,7 @@ client.on('message', async message => {
   
   if (!message.author.bot 
       &&
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
       &&
       (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('молодец') || message.content.toLowerCase().includes('ты ж моя'))
      ) {
@@ -276,9 +276,9 @@ client.on('message', async message => {
   
   if (!message.author.bot 
       &&
-      (message.content.toLowerCase().includes('хватит') || message.content.toLowerCase().includes('прекращай') || message.content.toLowerCase().includes('перестань') || message.content.toLowerCase().includes('прекрати')) 
+      (checkWord(message.content, 'хватит') || checkWord(message.content, 'прекращай') || checkWord(message.content, 'перестань') || checkWord(message.content, 'прекрати')) 
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     setActivity();
     let answersArray = ['Всё-всё!', 'Ну ещё 5 минуточек(', 'Ладно, прекращаю', 'Ничего нельзя(', 'Со мной легко договориться!'];
@@ -290,7 +290,7 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('посмотри') || message.content.toLowerCase().includes('послушай') || message.content.toLowerCase().includes('поиграй')) 
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     
     let type;
@@ -333,9 +333,9 @@ client.on('message', async message => {
   // Камень, ножницы, бумага 
   if (!message.author.bot 
       &&
-      (message.content.toLowerCase().includes('давай играть')) 
+      (message.content.toLowerCase().includes('давай играть') || message.content.toLowerCase().includes('давай поиграем')) 
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot'))
      ) {
     message.channel.send('Давай! Камень, ножницы, бумага?');
     games.push({player: message.author.username, finished: false, points: {player: 0, bot: 0}});
@@ -345,7 +345,7 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase() == 'камень' || message.content == '✊' || message.content.toLowerCase() == 'ножницы' || message.content == '✌' || message.content.toLowerCase() == 'бумага' || message.content == '🤚') 
      ) {
-    console.log(games);
+    //console.log(games);
     if (games.length !== 0 && games.every(game => {return (game.player == message.author.username && game.finished)})) {
       message.channel.send(`${message.author.username}, игра уже закончена, чтобы начать новую, скажи "бот, давай играть"`);
     } else if (!games.some(game => {return (game.player == message.author.username && !game.finished)})) {
@@ -356,7 +356,8 @@ client.on('message', async message => {
         if (game.player == message.author.username && !game.finished) {
           let playerCast = transfrom(message.content);
           let botCast = transfrom(botCasted);
-          checkPoints(game, playerCast, botCast);
+          console.log(playerCast, botCast);
+          addPoints(game, playerCast, botCast);
         }    
       });
       checkResult(message.author.username, message);
@@ -383,7 +384,7 @@ client.on('message', async message => {
     }    
   }
   
-  function checkPoints(game, playerCast, botCast) {
+  function addPoints(game, playerCast, botCast) {
     if (playerCast == 'бумага' && botCast == 'ножницы') game.points.bot++;
     if (playerCast == 'ножницы' && botCast == 'бумага') game.points.player++;
 
@@ -391,11 +392,11 @@ client.on('message', async message => {
     if (playerCast == 'ножницы' && botCast == 'камень') game.points.bot++;
 
     if (playerCast == 'бумага' && botCast == 'камень') game.points.player++;
-    if (playerCast == 'камень' && botCast == 'бумага') game.points.bot++;  
+    if (playerCast == 'камень' && botCast == 'бумага') game.points.bot++;
+    console.log(game);
   }
   
   function checkResult(player, message) {
-    console.log(games);
     games.forEach(game => {
       if (game.player == player && !game.finished) {
         if (game.points.player == game.points.bot) {
@@ -405,8 +406,11 @@ client.on('message', async message => {
             message.channel.send(`1:1, ничья, давай ещё!`);
           }
         }
-        if ((game.points.player == 1 && game.points.bot == 0) || (game.points.player == 0 && game.points.bot == 1)) {
-          message.channel.send(`1:0, давай ещё!`);
+        if ((game.points.player == 1 && game.points.bot == 0)) {
+          message.channel.send(`1:0 в твою пользу, давай ещё!`);
+        }
+        if ((game.points.player == 0 && game.points.bot == 1)) {
+          message.channel.send(`1:0 в мою пользу :) Давай ещё!`);
         }
         if (game.points.player == 2) {
           message.channel.send(`Победа твоя, ${message.author.username}!`);
@@ -417,7 +421,8 @@ client.on('message', async message => {
           game.finished = true;
         }       
       }
-    });   
+    });
+    console.log(games);
   }
   
   /////////////////
@@ -456,7 +461,7 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('кофе')) 
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot'))
      ) {
     message.channel.send('☕');
   } 
@@ -465,12 +470,12 @@ client.on('message', async message => {
       &&
       (message.content.toLowerCase().includes('вино') || message.content.toLowerCase().includes('винишк'))
       && 
-      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content))
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot'))
      ) {
     message.channel.send('🍷');
   }    
   
-  if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkName(message.content)) {
+  if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'bot')) {
     message.react('🥔')
       .then(console.log(`Liked that: ${message.content}`))
       .catch(console.error);
@@ -485,6 +490,10 @@ client.on('message', async message => {
   if (message.content.toLowerCase().includes('пиу')) {
     message.channel.send('Вжух!');
   }
+  
+  if (message.content.toLowerCase() == '🥔') {
+    message.channel.send('Туть!');
+  }  
 });
 
 // Log our bot in 
