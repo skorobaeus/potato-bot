@@ -296,13 +296,13 @@ client.on('message', async message => {
     let type;
     let activity;
     message.content.split(' ').forEach(elem => {
-      if (elem == 'посмотри' || elem == 'посмотри,' || elem == 'послушай' || elem == 'послушай,' || elem == 'поиграй') {    
+      if (elem.toLowerCase() == 'посмотри' || elem.toLowerCase() == 'посмотри,' || elem.toLowerCase() == 'послушай' || elem.toLowerCase() == 'послушай,' || elem.toLowerCase() == 'поиграй') {    
         
-        if (elem == 'посмотри' || elem == 'посмотри,') type = 'WATCHING';
-        if (elem == 'послушай' || elem == 'послушай,') type = 'LISTENING';
-        if (elem == 'поиграй') type = 'PLAYING';
+        if (elem.toLowerCase() == 'посмотри' || elem.toLowerCase() == 'посмотри,') type = 'WATCHING';
+        if (elem.toLowerCase() == 'послушай' || elem.toLowerCase() == 'послушай,') type = 'LISTENING';
+        if (elem.toLowerCase() == 'поиграй') type = 'PLAYING';
         
-        activityArr = message.content.substring(message.content.indexOf(elem) + elem.length).trim().toLowerCase().split(' ');
+        activityArr = message.content.substring(message.content.indexOf(elem) + elem.length).trim().split(' ');
         if (type == 'PLAYING' && activityArr[0] == 'в') {
           activityArr.shift();
           activity = activityArr.join(' ');
@@ -359,7 +359,7 @@ client.on('message', async message => {
       let botCasted = rollDie(message);
       games.forEach(game => {
         if (game.player == message.author.username && !game.finished) {
-          let playerCast = transfrom(message.content);
+          let playerCast = transfrom(message.content.toLowerCase());
           let botCast = transfrom(botCasted);
           console.log(playerCast, botCast);
           addPoints(game, playerCast, botCast);
