@@ -268,6 +268,8 @@ client.on('message', async message => {
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
       &&
       (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || checkWord(message.content, 'молодец') || message.content.toLowerCase().includes('ты ж моя'))
+      &&
+      (!message.content.includes('?'))
      ) {
     let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻', ':)'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
@@ -279,6 +281,8 @@ client.on('message', async message => {
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
       &&
       (checkWord(message.content, 'скажи') || checkWord(message.content, 'подтверди') || checkWord(message.content, 'согласись') || checkWord(message.content, 'согласен') || (checkWord(message.content, 'правда') && message.content.includes('?')))
+      &&
+      (!message.content.toLowerCase().includes('кто молодец?') && !message.content.toLowerCase().includes('кто хороший мальчик?'))
      ) {
     
     let startArray = ['А я всегда считал, что', 'Вне всякого сомнения,', 'Согласен,', '', 'Невозможно спорить, что'];
@@ -323,13 +327,11 @@ client.on('message', async message => {
         message.channel.send(`в смысле "ага" ХД`);
       }
     } else {
-      if (answerArr.join(' ').includes('кто молодец') || answerArr.join(' ').includes('кто хороший мальчик')) {
-        message.channel.send('Не могу решить, повторить ли за тобой или ответить на вопрос :(');
-      }
       if (answerArr.join(' ').includes('прекрати') || answerArr.join(' ').includes('перестань') || answerArr.join(' ').includes('прекращай') || answerArr.join(' ').includes('хватит')) {
         message.channel.send('Дак сказать или прекратить?');
+      } else {
+        message.channel.send([[random(startArray), answerArr.join(' ')].join(' '), random(finishArray)].join(''));
       }
-      message.channel.send([[random(startArray), answerArr.join(' ')].join(' '), random(finishArray)].join(''));
     }
   }  
   
