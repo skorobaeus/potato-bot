@@ -281,7 +281,7 @@ client.on('message', async message => {
       (checkWord(message.content, 'скажи') || checkWord(message.content, 'подтверди') || checkWord(message.content, 'согласись') || checkWord(message.content, 'согласен') || (checkWord(message.content, 'правда') && message.content.includes('?')))
      ) {
     
-    let startArray = ['А я всегда считал, что', 'Вне всякого сомнения,', 'Согласен,', '', 'Инфа сотка,', 'Невозможно спорить, что'];
+    let startArray = ['А я всегда считал, что', 'Вне всякого сомнения,', 'Согласен,', '', 'Невозможно спорить, что'];
     let finishArray = ['!', ':)', '💯', '))', '🙃', '😊', '😺'];
     let shortArray = ['А как же', 'Точно-точно', 'Абсолютно согласен', 'Как скажешь', 'Ага', 'fuf', 'Ещё бы!', 'THIS 👆', 'dthyj!'];
     function random(array) {
@@ -297,9 +297,9 @@ client.on('message', async message => {
     if (checkWord(message.content, 'правда')) command = 'правда';
     
     const answerArr = message.content.substring(message.content.indexOf(command) + command.length).trim().split(' ');
-    if (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '') answerArr.shift();
-    if (answerArr[0].replace(/[^a-z0-9а-яё]/g, '') == 'же') answerArr.shift();
-    if (answerArr[0] == 'что') answerArr.shift();
+    if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '')) answerArr.shift();
+    if (answerArr[0] && (answerArr[0].replace(/[^a-z0-9а-яё]/g, '') == 'же')) answerArr.shift();
+    if (answerArr[0] && (answerArr[0] == 'что')) answerArr.shift();
     
     if (answerArr[0]) {
       let lookingForName = answerArr[0].toLowerCase().replace(/[^a-z0-9а-яё]/g, '');
