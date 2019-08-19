@@ -267,7 +267,7 @@ client.on('message', async message => {
       &&
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
       &&
-      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || message.content.toLowerCase().includes('молодец') || message.content.toLowerCase().includes('ты ж моя'))
+      (message.content.toLowerCase().includes('спасиб') || message.content.toLowerCase().includes('милый') || message.content.toLowerCase().includes('хороший') || message.content.toLowerCase().includes('умница') || checkWord(message.content, 'молодец') || message.content.toLowerCase().includes('ты ж моя'))
      ) {
     let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻', ':)'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
@@ -323,13 +323,14 @@ client.on('message', async message => {
         message.channel.send(`в смысле "ага" ХД`);
       }
     } else {
+      if (answerArr.join(' ').includes('кто молодец') || answerArr.join(' ').includes('кто хороший мальчик') || answerArr.join(' ').includes('прекрати') || answerArr.join(' ').includes('перестань') || answerArr.join(' ').includes('прекращай') || answerArr.join(' ').includes('хватит')) return;
       message.channel.send([[random(startArray), answerArr.join(' ')].join(' '), random(finishArray)].join(''));
     }
   }  
   
   if (!message.author.bot 
       &&
-      (checkWord(message.content, 'хватит') || checkWord(message.content, 'прекращай') || checkWord(message.content, 'перестань') || checkWord(message.content, 'прекрати')) 
+      ( checkWord(message.content, 'хватит') || checkWord(message.content, 'прекращай') || checkWord(message.content, 'перестань') || checkWord(message.content, 'прекрати') ) 
       && 
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
