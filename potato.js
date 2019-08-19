@@ -323,7 +323,9 @@ client.on('message', async message => {
         message.channel.send(`в смысле "ага" ХД`);
       }
     } else {
-      if (answerArr.join(' ').includes('кто молодец') || answerArr.join(' ').includes('кто хороший мальчик')) break;
+      if (answerArr.join(' ').includes('кто молодец') || answerArr.join(' ').includes('кто хороший мальчик')) {
+        message.channel.send('Не могу решить, повторить ли за тобой или ответить на вопрос :(');
+      }
       if (answerArr.join(' ').includes('прекрати') || answerArr.join(' ').includes('перестань') || answerArr.join(' ').includes('прекращай') || answerArr.join(' ').includes('хватит')) {
         message.channel.send('Дак сказать или прекратить?');
       }
