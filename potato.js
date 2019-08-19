@@ -323,7 +323,10 @@ client.on('message', async message => {
         message.channel.send(`в смысле "ага" ХД`);
       }
     } else {
-      if (answerArr.join(' ').includes('кто молодец') || answerArr.join(' ').includes('кто хороший мальчик') || answerArr.join(' ').includes('прекрати') || answerArr.join(' ').includes('перестань') || answerArr.join(' ').includes('прекращай') || answerArr.join(' ').includes('хватит')) return;
+      if (answerArr.join(' ').includes('кто молодец') || answerArr.join(' ').includes('кто хороший мальчик')) break;
+      if (answerArr.join(' ').includes('прекрати') || answerArr.join(' ').includes('перестань') || answerArr.join(' ').includes('прекращай') || answerArr.join(' ').includes('хватит')) {
+        message.channel.send('Дак сказать или прекратить?');
+      }
       message.channel.send([[random(startArray), answerArr.join(' ')].join(' '), random(finishArray)].join(''));
     }
   }  
@@ -493,7 +496,7 @@ client.on('message', async message => {
       .catch(console.error);
   }
   
-  if (!message.author.bot && message.content.toLowerCase().includes('кто хороший мальчик')) {
+  if (!message.author.bot && message.content.toLowerCase().includes('кто хороший мальчик?')) {
     message.channel.send(`Я хороший мальчик! 😊`);
     message.react('😊')
       .then(console.log(`Liked that: ${message.content}`))
