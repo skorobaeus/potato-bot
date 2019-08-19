@@ -272,7 +272,60 @@ client.on('message', async message => {
     let answersArray = ['Всегда рад 😊', 'Всегда пожалуйста 😇', 'Aww 😻', ':)'];
     let answersRandom = Math.floor(Math.random() * answersArray.length);    
     message.channel.send(answersArray[answersRandom]);
-  }    
+  }
+  
+  if (!message.author.bot 
+      &&
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
+      &&
+      (checkWord(message.content, 'скажи') || checkWord(message.content, 'подтверди') || checkWord(message.content, 'согласись') || checkWord(message.content, 'согласен') || (checkWord(message.content, 'правда') && message.content.includes('?')))
+     ) {
+    
+    let startArray = ['А я всегда считал, что', 'Вне всякого сомнения,', 'Согласен,', '', 'Инфа сотка,', 'Невозможно спорить, что'];
+    let finishArray = ['!', ':)', '💯', '))', '🙃', '😊', '😺'];
+    let shortArray = ['А как же', 'Точно-точно', 'Абсолютно согласен', 'Как скажешь', 'Ага', 'fuf', 'Ещё бы!', 'THIS 👆', 'dthyj!'];
+    function random(array) {
+      let randomNum = Math.floor(Math.random() * array.length);
+      return array[randomNum];
+    }
+    
+    let command;
+    if (checkWord(message.content, 'скажи')) command = 'скажи';
+    if (checkWord(message.content, 'подтверди')) command = 'подтверди';
+    if (checkWord(message.content, 'согласись')) command = 'согласись';
+    if (checkWord(message.content, 'согласен')) command = 'согласен';
+    if (checkWord(message.content, 'правда')) command = 'правда';
+    
+    const answerArr = message.content.substring(message.content.indexOf(command) + command.length).trim().split(' ');
+    if (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '') answerArr.shift();
+    if (answerArr[0].replace(/[^a-z0-9а-яё]/g, '') == 'же') answerArr.shift();
+    if (answerArr[0] == 'что') answerArr.shift();
+    
+    if (answerArr[0]) {
+      let lookingForName = answerArr[0].toLowerCase().replace(/[^a-z0-9а-яё]/g, '');
+      console.log(lookingForName);
+      if (botNames.some(name => {return lookingForName.includes(name)}) || lookingForName == 'бот') answerArr.shift();    
+    }
+    
+    console.log(answerArr);
+    
+    if (answerArr.length == 0) {
+      let randomShort = random(shortArray);
+      
+      if (randomShort == 'dthyj!') {
+        const m = await message.channel.send('dthyj!');
+        setTimeout(m.edit('Верно!'), 2000);
+      } else {
+        message.channel.send([randomShort, random(finishArray)].join(''));      
+      }
+      
+      if (randomShort == 'fuf') {
+        message.channel.send(`в смысле "ага" ХД`);
+      }
+    } else {
+      message.channel.send([[random(startArray), answerArr.join(' ')].join(' '), random(finishArray)].join(''));
+    }
+  }  
   
   if (!message.author.bot 
       &&
