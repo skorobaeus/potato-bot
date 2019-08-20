@@ -318,7 +318,7 @@ client.on('message', async message => {
       
       if (randomShort == 'dthyj!') {
         const m = await message.channel.send('dthyj!');
-        setTimeout(m.edit('Верно!'), 2000);
+        setTimeout(m.edit('Верно!').then(console.log(`Edited: ${m.content}`)), 4000);
       } else {
         message.channel.send([randomShort, random(finishArray)].join(''));      
       }
