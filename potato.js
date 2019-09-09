@@ -301,7 +301,7 @@ client.on('message', async message => {
     if (checkWord(message.content, 'правда')) command = 'правда';
     
     const answerArr = message.content.substring(message.content.toLowerCase().indexOf(command) + command.length).trim().split(' ');
-    if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '')) answerArr.shift();
+    if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '!' || answerArr[0] == '')) answerArr.shift();
     if (answerArr[0] && (answerArr[0].replace(/[^a-z0-9а-яё]/g, '') == 'же')) answerArr.shift();
     if (answerArr[0] && (answerArr[0] == 'что')) answerArr.shift();
     
