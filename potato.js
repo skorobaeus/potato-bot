@@ -117,7 +117,6 @@ client.on('ready', () => {
   console.log('I am ready!');
   setActivity();  
   checkCheers(); 
-  //console.log(client);
 });
 
 
@@ -214,6 +213,53 @@ client.on('message', async message => {
     });    
   }
   
+  if (message.content.toLowerCase().includes('!purge') && !message.author.bot) {
+    if (message.author.id != 379669647730933760) {
+      message.channel.send('Access denied :P');
+    } else if (message.channel.id != 598888793369608192) {
+      message.channel.send('Нет, пурджить сообщения нигде, кроме #test, мы не будем');
+    } else {
+      let deletedCount;
+      const fetchedMessages;
+
+      const deleteAll = async (channel) => {
+        let fetchinPromise = new Promise(async (resolve, reject) => {
+
+          deletedCount = 0;
+          fetchedMessages = [];
+          let fetchingLimit = 99;
+          let fetchingBefore = channel.lastMessageID;
+
+          while (fetchingLimit == 99) {
+            await channel.messages.fetch({ limit: fetchingLimit, before: fetchingBefore})
+              .then(messages => {
+                messages.each(singleMessage => {
+                  singleMessage.delete()
+                    .then(msg => console.log(`Deleted message`))
+                    .catch(console.error);
+                  deletedCount++;
+                });
+                fetchingBefore = messages.last().id;
+                if (messages.array().length < fetchingLimit) {
+                  fetchingLimit = messages.array().length;
+                  resolve(deletedCount);
+                }
+              })
+              .catch(error => {
+                console.log(`Couldn't fetch messages because of: ${error}`)
+              }); 
+          }      
+        });
+
+        fetchinPromise
+          .then(result => message.channel.send(`Удалено ${result} сообщений`))
+          .catch(console.error); 
+      }
+      
+      deleteAll(message.channel);
+    }
+  }  
+  
   if (!message.author.bot && message.content.toLowerCase().includes('!gif')) {
     const param = {
       url: 'api.giphy.com/v1/gifs/search',
@@ -301,7 +347,10 @@ client.on('message', async message => {
     if (checkWord(message.content, 'правда')) command = 'правда';
     
     const answerArr = message.content.substring(message.content.toLowerCase().indexOf(command) + command.length).trim().split(' ');
-    if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '')) answerArr.shift();
+    
+    console.log(answerArr);
+    
+    if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '!' || answerArr[0] == '') || answerArr[0].length == 0) answerArr.shift();
     if (answerArr[0] && (answerArr[0].replace(/[^a-z0-9а-яё]/g, '') == 'же')) answerArr.shift();
     if (answerArr[0] && (answerArr[0] == 'что')) answerArr.shift();
     
@@ -318,7 +367,7 @@ client.on('message', async message => {
       
       if (randomShort == 'dthyj!') {
         const m = await message.channel.send('dthyj!');
-        setTimeout(m.edit('Верно!').then(console.log(`Edited: ${m.content}`)), 4000);
+        setTimeout(() => m.edit('Верно!').then(msg => console.log(`Edited: ${msg}`)).catch(console.error), 4000);
       } else {
         message.channel.send([randomShort, random(finishArray)].join(''));      
       }
@@ -530,16 +579,41 @@ client.on('message', async message => {
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     message.channel.send('☕');
-  } 
+  }
+  
+  if (!message.author.bot 
+      &&
+      ( (message.content.toLowerCase().includes('чаю') || message.content.toLowerCase().includes('чая')) && (message.content.toLowerCase().includes('леди') || message.content.toLowerCase().includes('сэру') || message.content.toLowerCase().includes('госпо')) ) 
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
+     ) {
+    let teaUrl = `sources/img/tea${Math.floor(Math.random() * 9)}.gif`; //do i regret dis? i regret not
+    message.channel.send({
+      files: [{
+        attachment: teaUrl
+      }]
+    })
+      .then(console.log('Posted tea gif'))
+      .catch(console.error);
+  }  
     
   if (!message.author.bot 
       &&
-      (message.content.toLowerCase().includes('вино') || message.content.toLowerCase().includes('винишк'))
+      (message.content.toLowerCase().includes('вино') || message.content.toLowerCase().includes('винишк') || message.content.toLowerCase().includes('вина'))
       && 
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
     message.channel.send('🍷');
-  }    
+  }   
+  
+  if (!message.author.bot 
+      &&
+      (message.content.toLowerCase().includes('виски') || message.content.toLowerCase().includes('вискар') || message.content.toLowerCase().includes('чего покрепче'))
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
+     ) {
+    message.channel.send('🥃');
+  }   
   
   if (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот')) {
     message.react('🥔')
