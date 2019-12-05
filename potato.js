@@ -220,7 +220,7 @@ client.on('message', async message => {
       message.channel.send('Нет, пурджить сообщения нигде, кроме #test, мы не будем');
     } else {
       let deletedCount;
-      const fetchedMessages;
+      const fetchedMessages = [];
 
       const deleteAll = async (channel) => {
         let fetchinPromise = new Promise(async (resolve, reject) => {
