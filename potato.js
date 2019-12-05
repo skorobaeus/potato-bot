@@ -347,10 +347,14 @@ client.on('message', async message => {
     if (checkWord(message.content, 'правда')) command = 'правда';
     
     const answerArr = message.content.substring(message.content.toLowerCase().indexOf(command) + command.length).trim().split(' ');
+<<<<<<< HEAD
     
     console.log(answerArr);
     
     if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '!' || answerArr[0] == '') || answerArr[0].length == 0) answerArr.shift();
+=======
+    if (answerArr[0] && (answerArr[0] == ',' || answerArr[0] == ':' || answerArr[0] == '?' || answerArr[0] == '!' || answerArr[0] == '')) answerArr.shift();
+>>>>>>> ce8e3d5a52945c68742128994681ce92a70a7050
     if (answerArr[0] && (answerArr[0].replace(/[^a-z0-9а-яё]/g, '') == 'же')) answerArr.shift();
     if (answerArr[0] && (answerArr[0] == 'что')) answerArr.shift();
     
