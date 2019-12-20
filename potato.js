@@ -269,7 +269,7 @@ client.on('message', async message => {
     }
     
     const rp = require('request-promise');
-    rp(`https://${param.url}?api_key=${param.apiKey}&q=${param.requested}&limit=${param.limit}&offset=0&rating=${param.rating}&lang=en`)
+    rp(`https://${param.url}?api_key=${param.apiKey}&q=${param.requested}&limit=${param.limit}&offset=0&lang=en`)
     .then(data => {
         try {
           let parsedData = JSON.parse(data);
