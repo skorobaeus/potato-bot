@@ -266,7 +266,7 @@ client.on('message', async message => {
       apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
       requested: message.content.substring(message.content.indexOf('!gif') + 4).trim().toLowerCase(),
       limit: 5,
-      rating: 'G'
+      rating: 'R'
     }
     
     const rp = require('request-promise');
