@@ -265,7 +265,8 @@ client.on('message', async message => {
       url: 'api.giphy.com/v1/gifs/search',
       apiKey: 'ATdqioLenb44FbYJc88LmlBShmX1F1Bw',
       requested: message.content.substring(message.content.indexOf('!gif') + 4).trim().toLowerCase(),
-      limit: 5
+      limit: 5,
+      rating: 'G'
     }
     
     const rp = require('request-promise');
