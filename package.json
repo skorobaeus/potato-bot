@@ -12,11 +12,7 @@
       "resolved": "https://registry.npmjs.org/async/-/async-2.6.2.tgz",
       "version": "2.6.2"
     },
-    "async-limiter": {
-      "integrity": "sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==",
-      "resolved": "https://registry.npmjs.org/async-limiter/-/async-limiter-1.0.0.tgz",
-      "version": "1.0.0"
-    },
+    "async-limiter": "^2.0.0",
     "asynckit": {
       "integrity": "sha1-x57Zf380y48robyXkLzDZkdLS3k=",
       "resolved": "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz",
