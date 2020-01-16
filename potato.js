@@ -28,8 +28,8 @@ function checkCheers() {
   knock_db
     .then(collection => {
       collection.find().toArray((err, items) => {
-        items.forEach(item => {   
-          if (new Date().getMonth() === '0' && (new Date().getDate() === '1' || new Date().getDate() === '2')) { //Хероку перезагружается каждые 24-27 часов, одни сутки могут выпасть
+        items.forEach(item => {  
+          if (new Date().getMonth() == '0' && (new Date().getDate() == '1' || new Date().getDate() == '2')) { //Хероку перезагружается каждые 24-27 часов, одни сутки могут выпасть
             collection.updateOne({name: item.name}, {'$set': {'cheered': false}}, (err, item) => {
               console.log('Начало года, информация о поздравлении сброшена', item);
             })            
@@ -170,6 +170,7 @@ client.on('message', async message => {
   }  
     
   if (message.content.toLowerCase().includes('!count') && !message.author.bot) {
+    let total = 0;
     const sought = message.content.substring(message.content.indexOf('!count') + 6).trim().toLowerCase();
     
     const fetchAll = async (channel) => {
@@ -200,7 +201,8 @@ client.on('message', async message => {
         .then(
           result => {
             let counted = result.array.filter(singleMessage => singleMessage.toLowerCase().includes(result.lookinFor));
-            message.channel.send(`Искал слово ${result.lookinFor} среди ${result.array.length} сообщений на канале #${result.channelName}, нашёл совпадений: ${counted.length}`);
+            total += counted.length;
+            message.channel.send(`Искал слово ${result.lookinFor} среди ${result.array.length} сообщений на канале #${result.channelName}, нашёл совпадений: ${counted.length}. Суммарно: ${total}.`);
           },
           error => console.log(`Rejected because of: ` + error)
         )
@@ -213,7 +215,7 @@ client.on('message', async message => {
     });    
   }
   
-  if (message.content.toLowerCase().includes('!purge') && !message.author.bot) {
+/*  if (message.content.toLowerCase().includes('!purge') && !message.author.bot) {
     if (message.author.id != 379669647730933760) {
       message.channel.send('Access denied :P');
     } else if (message.channel.id != 598888793369608192) {
@@ -258,7 +260,7 @@ client.on('message', async message => {
       
       deleteAll(message.channel);
     }
-  }  
+  }  */
   
   if (!message.author.bot && message.content.toLowerCase().includes('!gif')) {
     const param = {
