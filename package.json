@@ -220,11 +220,7 @@
       "resolved": "https://registry.npmjs.org/pako/-/pako-1.0.10.tgz",
       "version": "1.0.10"
     },
-    "prism-media": {
-      "integrity": "sha512-KCu3SlT1EtS0lvF74NGLSTzr5jrkRajE9n+S2jnUvvdiN5SpjsGj0/HgR1QK9+985Yv8cxjwZnpFRaj+SimDGA==",
-      "resolved": "https://registry.npmjs.org/prism-media/-/prism-media-1.0.2.tgz",
-      "version": "1.0.2"
-    },
+    "prism-media": "^1.2.1",
     "process-nextick-args": {
       "integrity": "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==",
       "resolved": "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz",
