@@ -423,7 +423,7 @@ client.on('message', async message => {
       }
     });
     
-    if (activity.length > 50) {
+    if (activity && activity.length > 50) {
       message.channel.send('длинна, сложна, нипанятна :(');
       return;
     } else {
