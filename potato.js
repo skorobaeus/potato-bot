@@ -91,18 +91,18 @@ const giveReaction = async (message, amount, reactionsArray) => {
 function setActivity(type, activity, callback) { 
   if (type && activity) {
     client.user.setActivity(activity, {type: type})
-      .then(presence => console.log(`Activity set to ${presence.activity.name} by request`))
+      .then(presence => console.log(`Activity set to ${presence.activities[0].name} by request`))
       .catch(console.error);
   } else {
   const activitiesArray = [
-    {type: 'WATCHING', list: ['Игру престолов', 'Матрицу', 'сны', 'как кэп работает', 'белорусское кино', 'спойлеры']},
-    {type: 'PLAYING', list: ['Cyberpunk 2077', 'Mass Effect', 'Deus Ex', 'шахматы', 'Ферму VK', 'сапёра']},
-    {type: 'LISTENING', list: ['музяку', 'чей-то плейлист', 'Dragon Age OST', 'Nina Simone', 'мотивационные подкасты', 'треск горящих жоп']}
+    {type: 'WATCHING', list: ['Homeland', 'Армагеддон', 'дзесяты сон', 'як працює кэп', 'беларускае кіно', 'спойлеры']},
+    {type: 'PLAYING', list: ['Cyberpunk 2077', 'Mass Effect 2', 'Deus Ex: Mankind Divided', 'шашки', 'пасьянс']},
+    {type: 'LISTENING', list: ['музяку', 'кэпов плейлист', 'Interstellar OST', 'David Bowie', 'як лётае камар']}
   ]
   const randomActivity = Math.floor(Math.random() * activitiesArray.length);
   
   client.user.setActivity(activitiesArray[randomActivity].list[Math.floor(Math.random() * activitiesArray[randomActivity].list.length)], { type: activitiesArray[randomActivity].type })
-    .then(presence => console.log(`Activity set to ${presence.activity.name}`))
+    .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
     .catch(console.error);
   }
   if (callback) callback(type, activity);
@@ -149,7 +149,7 @@ client.on('message', async message => {
   }   
   
   if (message.content.toLowerCase() === '!outrage' && !message.author.bot) {
-    giveReaction(message, 3, ['👿', '😡', '👺', '😤', '😠', message.guild.emojis.get('572080324981293066'), message.guild.emojis.get('575710002187206686')]);
+    giveReaction(message, 3, ['👿', '😡', '👺', '😤', '😠', message.guild.emojis.resolve('572080324981293066'), message.guild.emojis.resolve('575710002187206686')]);
   }
   
   if (message.content.toLowerCase() === '!cry' && !message.author.bot) {
@@ -157,7 +157,7 @@ client.on('message', async message => {
   }
 
   if (message.content.toLowerCase() === '!omg' && !message.author.bot) {
-    giveReaction(message, 3, ['🙀', '🙈', '😱', '😮', '😯', message.guild.emojis.get('572080651704991771'), message.guild.emojis.get('575702079373443099'), message.guild.emojis.get('600204266170220545')]);
+    giveReaction(message, 3, ['🙀', '🙈', '😱', '😮', '😯', message.guild.emojis.resolve('572080651704991771'), message.guild.emojis.resolve('575702079373443099'), message.guild.emojis.resolve('600204266170220545')]);
   }
   
   if (message.content.toLowerCase() === '!lol' && !message.author.bot) {
@@ -214,53 +214,6 @@ client.on('message', async message => {
       }
     });    
   }
-  
-/*  if (message.content.toLowerCase().includes('!purge') && !message.author.bot) {
-    if (message.author.id != 379669647730933760) {
-      message.channel.send('Access denied :P');
-    } else if (message.channel.id != 598888793369608192) {
-      message.channel.send('Нет, пурджить сообщения нигде, кроме #test, мы не будем');
-    } else {
-      let deletedCount;
-      const fetchedMessages = [];
-
-      const deleteAll = async (channel) => {
-        let fetchinPromise = new Promise(async (resolve, reject) => {
-
-          deletedCount = 0;
-          fetchedMessages = [];
-          let fetchingLimit = 99;
-          let fetchingBefore = channel.lastMessageID;
-
-          while (fetchingLimit == 99) {
-            await channel.messages.fetch({ limit: fetchingLimit, before: fetchingBefore})
-              .then(messages => {
-                messages.each(singleMessage => {
-                  singleMessage.delete()
-                    .then(msg => console.log(`Deleted message`))
-                    .catch(console.error);
-                  deletedCount++;
-                });
-                fetchingBefore = messages.last().id;
-                if (messages.array().length < fetchingLimit) {
-                  fetchingLimit = messages.array().length;
-                  resolve(deletedCount);
-                }
-              })
-              .catch(error => {
-                console.log(`Couldn't fetch messages because of: ${error}`)
-              }); 
-          }      
-        });
-
-        fetchinPromise
-          .then(result => message.channel.send(`Удалено ${result} сообщений`))
-          .catch(console.error); 
-      }
-      
-      deleteAll(message.channel);
-    }
-  }  */
   
   if (!message.author.bot && message.content.toLowerCase().includes('!gif')) {
     const param = {
