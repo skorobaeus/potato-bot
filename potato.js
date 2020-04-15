@@ -550,6 +550,22 @@ client.on('message', async message => {
       .then(console.log('Posted tea gif'))
       .catch(console.error);
   }  
+  
+  if (!message.author.bot 
+      &&
+      ( message.content.toLowerCase().includes('возмутись') || message.content.toLowerCase().includes('возмутительно') ) 
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
+     ) {
+    let outrageUrl = `sources/img/angry${Math.floor(Math.random() * 3)}.gif`; //do i regret dis? also not
+    message.channel.send('Безобразие!', {
+      files: [{
+        attachment: outrageUrl
+      }]
+    })
+      .then(console.log('Posted tea gif'))
+      .catch(console.error);
+  }  
     
   if (!message.author.bot 
       &&
