@@ -171,9 +171,15 @@ client.on('message', async message => {
   }  
   
   if (message.content.toLowerCase() === '!satan' && !message.author.bot) {
-    message.react(message.guild.emojis.resolve('572082882839969813'));
-    message.react('🔥');
-    message.react(message.guild.emojis.resolve('697787222027665428'));
+    await message.channel.messages.fetch({ limit: 2 })
+          .then(messages => {
+            let mArray = messages.array();
+            mArray[mArray.length - 1].react(message.guild.emojis.resolve('572082882839969813'));
+            mArray[mArray.length - 1].react('🔥');
+            mArray[mArray.length - 1].react(message.guild.emojis.resolve('697787222027665428'));
+          })
+          .catch(error => console.log(`Couldn't fetch messages because of: ${error}`));
+          message.delete();    
   }   
    
   if(message.content.toLowerCase() === "!ping" && !message.author.bot) {
