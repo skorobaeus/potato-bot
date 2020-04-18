@@ -95,7 +95,7 @@ function setActivity(type, activity, callback) {
       .catch(console.error);
   } else {
   const activitiesArray = [
-    {type: 'WATCHING', list: ['Homeland', 'Армагеддон', 'дзесяты сон', 'як працює кэп', 'беларускае кіно', 'спойлеры']},
+    {type: 'WATCHING', list: ['Homeland', 'Армагеддон', 'дзесяты сон', 'як працює кэп', 'беларускае кіно', 'спойлеры', 'на зомби-апокалипсис']},
     {type: 'PLAYING', list: ['Cyberpunk 2077', 'Mass Effect 2', 'Deus Ex: Mankind Divided', 'шашки', 'пасьянс']},
     {type: 'LISTENING', list: ['музяку', 'кэпов плейлист', 'Interstellar OST', 'David Bowie', 'як лётае камар']}
   ]
@@ -122,7 +122,7 @@ client.on('ready', () => {
 
 // Create an event listener for messages
 client.on('message', async message => {
-  
+
   //COMMANDS
   if (message.content.toLowerCase() === '!help') {
     message.channel.send(`!bot — Ich bin Kartoffel
@@ -137,11 +137,17 @@ client.on('message', async message => {
 кто молодец? — скажет, что спросивший молодец
 кто хороший мальчик? — скажет, что он
 %bot_name% [прекрати / перестань / прекращай / хватит] — сменит статус
-%bot_name% [поиграй / послушай / посмотри] [запрос] — сменит статус на запрошенный`);
+%bot_name% [поиграй / послушай / посмотри] [запрос] — сменит статус на запрошенный
+%bot_name% [азот / нитроген] — постит картинку с жидким азотом
+%bot_name% [чаю + леди / сэру / госпоже / господину] — постит картинку с чаем
+%bot_name% [вина / винишка] — постит эмодзи с вином
+%bot_name% [виски / чего покрепче] — постит эмодзи с виски
+%bot_name% [возмутись / возмутительно] — поддакивает
+`);
   }   
   
   if (message.content.toLowerCase() === '!bot' && !message.author.bot) {
-    message.channel.send('Ich bin Kartoffel');
+    message.channel.send('Мяне клічуць бульба');
   }
   
   if (message.content.toLowerCase() === '!love' && !message.author.bot) {
@@ -163,6 +169,12 @@ client.on('message', async message => {
   if (message.content.toLowerCase() === '!lol' && !message.author.bot) {
     giveReaction(message, 3, ['😃', '😄', '😁', '😆', '😅', '😂']);
   }  
+  
+  if (message.content.toLowerCase() === '!satan' && !message.author.bot) {
+    message.react(message.guild.emojis.resolve('572082882839969813'));
+    message.react('🔥');
+    message.react(message.guild.emojis.resolve('697787222027665428'));
+  }   
    
   if(message.content.toLowerCase() === "!ping" && !message.author.bot) {
     const m = await message.channel.send("Ping?");
@@ -553,7 +565,7 @@ client.on('message', async message => {
   
   if (!message.author.bot 
       &&
-      ( message.content.toLowerCase().includes('возмутись') || message.content.toLowerCase().includes('возмутительно') ) 
+      ( message.content.toLowerCase().includes('возмути') ) 
       && 
       (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
      ) {
@@ -563,7 +575,23 @@ client.on('message', async message => {
         attachment: outrageUrl
       }]
     })
-      .then(console.log('Posted tea gif'))
+      .then(console.log('Posted outrage gif'))
+      .catch(console.error);
+  }
+  
+  if (!message.author.bot 
+      &&
+      ( message.content.toLowerCase().includes('азот') || message.content.toLowerCase().includes('нитроген') ) 
+      && 
+      (botNames.some(name => {return message.content.toLowerCase().includes(name)}) || checkWord(message.content, 'бот'))
+     ) {
+    let nitrogenUrl = `sources/img/azot${Math.floor(Math.random() * 3)}.jpg`;
+    message.channel.send(`Бежу, ${message.author.username}!`, {
+      files: [{
+        attachment: nitrogenUrl
+      }]
+    })
+      .then(console.log('brought nitrogen'))
       .catch(console.error);
   }  
     
