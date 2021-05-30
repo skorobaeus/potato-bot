@@ -344,6 +344,6 @@
       "resolved": "https://registry.npmjs.org/winston-transport/-/winston-transport-4.3.0.tgz",
       "version": "4.3.0"
     },
-    "ws": "^7.2.1"
+    "ws": "^7.4.6"
   }
 }
