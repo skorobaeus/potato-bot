@@ -11,7 +11,7 @@ const knock_db = new Promise((resolve, reject) => {
   const MongoClient = require('mongodb').MongoClient;
   const uri = process.env.MONGO_URI;
   //const uri = config.mongo;
-  const mngClient = new MongoClient(uri, { useNewUrlParser: true });
+  const mngClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   mngClient.connect((data, err) => {
     const pData = mngClient.db('potato_data');
     pData.collections((err, data) => {
@@ -225,10 +225,9 @@ client.on('message', async message => {
           error => console.log(`Rejected because of: ` + error)
         )
     }
-    
-    message.client.channels.each(singleChannel => {
-      if (singleChannel.type == 'text') {
-       fetchAll(singleChannel);   
+    message.client.channels.cache.each(singleChannel => {
+      if (singleChannel.type == 'text' && singleChannel.id !== '598888793369608192' && singleChannel.id !== '699852094471143504') {
+       fetchAll(singleChannel);
       }
     });    
   }
@@ -642,4 +641,4 @@ client.on('message', async message => {
 
 // Log our bot in 
 client.login(process.env.BOT_TOKEN);
-//client.login(config.token);
+client.login(config.token);
