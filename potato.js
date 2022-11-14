@@ -676,5 +676,5 @@ client.on(Events.MessageCreate, async message => {
 });
 
 // Log our bot in 
-//client.login(process.env.token);
-client.login(config.token);
+client.login(process.env.token);
+// client.login(config.token);
