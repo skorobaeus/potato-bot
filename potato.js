@@ -1,16 +1,47 @@
-// Import the discord.js module
-const Discord = require('discord.js');
-//const config = require('./auth.json');
+const config = require('./auth.json');
+
+const { REST, Routes } = require('discord.js');
+// const rest = new REST({ version: '10' }).setToken(config.token);
+const rest = new REST({ version: '10' }).setToken(process.env.token);
+
+const commands = [
+  {
+    name: 'ping',
+    description: 'Replies with Pong!',
+  },
+];
+
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.');
+
+    // await rest.put(Routes.applicationCommands(config.appID), { body: commands });
+    await rest.put(Routes.applicationCommands(process.env.appID), { body: commands });
+
+    console.log('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
 
 // Create an instance of a Discord client
-const client = new Discord.Client();
+const { Client, Events, GatewayIntentBits } = require('discord.js');
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers
+	],
+});
 
 // Functions & Arrays
 // Connection to Mongo DB
 const knock_db = new Promise((resolve, reject) => {
   const MongoClient = require('mongodb').MongoClient;
-  const uri = process.env.MONGO_URI;
-  //const uri = config.mongo;
+  const uri = process.env.mongo;
+  // const uri = config.mongo;
   const mngClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   mngClient.connect((data, err) => {
     const pData = mngClient.db('potato_data');
@@ -89,25 +120,25 @@ const giveReaction = async (message, amount, reactionsArray) => {
 
 // Установка статуса
 function setActivity(type, activity, callback) { 
-  if (type && activity) {
-    client.user.setActivity(activity, {type: type})
-      .then(presence => console.log(`Activity set to ${presence.activities[0].name} by request`))
-      .catch(console.error);
-  } else {
-  const activitiesArray = [
-    {type: 'WATCHING', list: ['Homeland', 'Армагеддон', 'дзесяты сон', 'як працює кэп', 'беларускае кіно', 'спойлеры', 'на зомби-апокалипсис']},
-    {type: 'PLAYING', list: ['Cyberpunk 2077', 'Mass Effect 2', 'Deus Ex: Mankind Divided', 'шашки', 'пасьянс']},
-    {type: 'LISTENING', list: ['музяку', 'кэпов плейлист', 'Interstellar OST', 'David Bowie', 'як лётае камар']}
-  ]
-  const randomActivity = Math.floor(Math.random() * activitiesArray.length);
+  // if (type && activity) {
+  //   client.user.setPresence(activity, {type: type})
+  //     .then(presence => console.log(`Activity set to ${presence.activities[0].name} by request`))
+  //     .catch(console.error);
+  // } else {
+  // const activitiesArray = [
+  //   {type: 3, name: ['Homeland', 'Армагеддон', 'дзесяты сон', 'як працює кэп', 'беларускае кіно', 'спойлеры', 'на зомби-апокалипсис']},
+  //   {type: 0, name: ['Cyberpunk 2077', 'Mass Effect 2', 'Deus Ex: Mankind Divided', 'шашки', 'пасьянс']},
+  //   {type: 2, name: ['музяку', 'кэпов плейлист', 'Interstellar OST', 'David Bowie', 'як лётае камар']}
+  // ]
+  // const randomActivity = Math.floor(Math.random() * activitiesArray.length);
   
-  client.user.setActivity(activitiesArray[randomActivity].list[Math.floor(Math.random() * activitiesArray[randomActivity].list.length)], { type: activitiesArray[randomActivity].type })
-    .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
-    .catch(console.error);
-  }
-  if (callback) callback(type, activity);
+  // client.user.setPresence(activitiesArray[randomActivity].list[Math.floor(Math.random() * activitiesArray[randomActivity].list.length)], { type: activitiesArray[randomActivity].type })
+  //   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
+  //   .catch(console.error);
+  // }
+  // if (callback) callback(type, activity);
+  client.user.setPresence({ activities: [{ type: 2, name: 'Шульман' }], status: 'idle' });
 }
-
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -119,9 +150,14 @@ client.on('ready', () => {
   checkCheers(); 
 });
 
+client.on(Events.InteractionCreate, interaction => {
+	console.log(interaction);
+});
 
 // Create an event listener for messages
-client.on('message', async message => {
+client.on(Events.MessageCreate, async message => {
+
+  if (message.author.bot) return false;
 
   //COMMANDS
   if (message.content.toLowerCase() === '!help') {
@@ -640,5 +676,5 @@ client.on('message', async message => {
 });
 
 // Log our bot in 
-client.login(process.env.BOT_TOKEN);
-//client.login(config.token);
+//client.login(process.env.token);
+client.login(config.token);
