@@ -1,4 +1,4 @@
-const config = require('./auth.json');
+// const config = require('./auth.json');
 
 const { REST, Routes } = require('discord.js');
 // const rest = new REST({ version: '10' }).setToken(config.token);
