@@ -1,4 +1,6 @@
 {
+  "name": "potato-bot",
+  "main": "potato.js",
   "dependencies": {
     "discord.js": "^14.6.0",
     "mongodb": "^4.11.0"
