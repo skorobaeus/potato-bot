@@ -7,7 +7,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.token);
 const commands = [
   {
     name: 'ping',
-    description: 'Replies with Pong',
+    description: 'Replies with Pong!',
   },
 ];
 
@@ -150,8 +150,20 @@ client.on('ready', () => {
   checkCheers(); 
 });
 
-client.on(Events.InteractionCreate, interaction => {
-	console.log(interaction);
+client.on(Events.InteractionCreate, async interaction => {
+  const command = interaction.client.commands.get(interaction.commandName);
+
+  if (!command) {
+    console.error(`No command matching ${interaction.commandName} was found.`);
+    return;
+  }
+
+  try {
+    await interaction.reply('Pong!');
+  } catch (error) {
+    console.error(`Error executing ${interaction.commandName}`);
+    console.error(error);
+  }  
 });
 
 // Create an event listener for messages
